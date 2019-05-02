@@ -5,6 +5,10 @@
 // @include  *
 // ==/UserScript==
 
+// This script shows biggest image and/or background image of the page
+// You can use FF "Display inline" addon or similar to view images in browser (if you encounter content type problems)
+
+
 //alert("Show biggest image");
 
 
@@ -15,6 +19,14 @@ scan_button.title="scan";
 scan_button.onclick=scan_for_biggest_image;
 scan_button.setAttribute("style","position:fixed;z-index:999990;top:0px;left:50%;right:50%;color:red;font:12px system;background-color:white;border:3px outset red;outline:none;border-radius:12px;padding:1px 2px;width:120px;height:23px");
 document.body.appendChild(scan_button);
+
+var scanbg_button=document.createElement("input");
+scanbg_button.type="button";
+scanbg_button.value="-Scan/view bg image-";
+scan_button.title="scan";
+scanbg_button.onclick=scan_for_bg_image;
+scanbg_button.setAttribute("style","position:fixed;z-index:999990;top:23px;left:50%;right:50%;color:red;font:12px system;background-color:white;border:3px outset red;outline:none;border-radius:12px;padding:1px 2px;width:120px;height:23px");
+document.body.appendChild(scanbg_button);
 
 var hidescan_button=document.createElement("input");
 hidescan_button.type="button";
@@ -31,6 +43,13 @@ window.onscroll = scrollin;
 	  document.getElementById("scan_button").style.display = "block";
 	}
 
+	function hide_the_scan_button() {
+    scan_button.setAttribute("style","display:hidden");
+    scanbg_button.setAttribute("style","display:hidden");
+    hidescan_button.setAttribute("style","display:hidden");
+	}
+
+// IMAGES:
 	function scan_for_biggest_image() {
 		var images = document.getElementsByTagName('img');
 		
@@ -53,7 +72,7 @@ window.onscroll = scrollin;
 		}
 		
 		var biggest_url=document.getElementsByTagName('img')[biggest_i].getAttribute('src');
-		//alert (biggest_url);
+		//alert(biggest_url);
 		
 		var biggest_button=document.createElement("input");
 		biggest_button.type="button";
@@ -63,13 +82,27 @@ window.onscroll = scrollin;
 		biggest_button.setAttribute("style","position:fixed;z-index:999992;top:0px;left:50%;right:50%;color:red;font:12px system;background-color:white;border:3px outset red;outline:none;border-radius:12px;padding:1px 2px;width:120px;height:25px");
 		document.body.appendChild(biggest_button);
 		
+
 		function Showing() {
 		  	//alert("Showing");
 				location.assign(biggest_url);
 		}
 	}
 
-	function hide_the_scan_button() {
-    scan_button.setAttribute("style","display:hidden");
-    hidescan_button.setAttribute("style","display:hidden");
-	}
+// BACKGROUND IMAGES:
+	function scan_for_bg_image() {
+      var images_bg = document.getElementsByTagName("body")[0].getAttribute("background");
+    	if (images_bg == null) {
+	   			images_bg = window.getComputedStyle( document.body ,null).getPropertyValue('background-image');
+          var strip=[images_bg.indexOf('"')+1, images_bg.lastIndexOf('"')];
+          images_bg=images_bg.substring(strip[0],strip[1]);
+          //alert(images_bg);
+      }
+      if (images_bg == null || images_bg == '') {
+        	alert("Background image not found");
+      }
+    	else {
+					//alert(images_bg);
+          location.assign(images_bg);
+      }
+  }
